@@ -15,6 +15,7 @@ class EmotionViewController: UIViewController {
     
     @IBOutlet var buttonLists: [UIButton]!
     @IBOutlet var labelLists: [UILabel]!
+    @IBOutlet var resetButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,15 +26,16 @@ class EmotionViewController: UIViewController {
     
     func setUI() {
         
-        settingButtonOrLabel(button: buttonLists[0], label: labelLists[0], imageName: "slime1", textLabel: "행복해 0")
-        settingButtonOrLabel(button: buttonLists[1], label: labelLists[1], imageName: "slime2", textLabel: "사랑해 0")
-        settingButtonOrLabel(button: buttonLists[2], label: labelLists[2], imageName: "slime3", textLabel: "좋아해 0")
-        settingButtonOrLabel(button: buttonLists[3], label: labelLists[3], imageName: "slime4", textLabel: "당황해 0")
-        settingButtonOrLabel(button: buttonLists[4], label: labelLists[4], imageName: "slime5", textLabel: "속상해 0")
-        settingButtonOrLabel(button: buttonLists[5], label: labelLists[5], imageName: "slime6", textLabel: "우울해 0")
-        settingButtonOrLabel(button: buttonLists[6], label: labelLists[6], imageName: "slime7", textLabel: "심심해 0")
-        settingButtonOrLabel(button: buttonLists[7], label: labelLists[7], imageName: "slime8", textLabel: "짜증나 0")
-        settingButtonOrLabel(button: buttonLists[8], label: labelLists[8], imageName: "slime9", textLabel: "눈물나 0")
+        countList = UserDefaults.standard.array(forKey: "countList") as? [Int] ?? [0,0,0,0,0,0,0,0,0]
+        for i in 0...8 {
+            settingButtonOrLabel(button: buttonLists[i], label: labelLists[i], imageName: "slime\(i+1)", textLabel: "\(textList[i]) \(countList[i])")
+        }
+        
+        resetButton.titleLabel?.font = .systemFont(ofSize: 20)
+        resetButton.setTitle("리셋하기", for: .normal)
+        resetButton.setTitleColor(.white, for: .normal)
+        resetButton.backgroundColor = .black
+        resetButton.layer.cornerRadius = 20
         
     }
     
@@ -50,8 +52,23 @@ class EmotionViewController: UIViewController {
     @IBAction func happyEmotionButtonTapped(_ sender: UIButton) {
         
         countList[sender.tag] += 1
-        
+        UserDefaults.standard.set(countList, forKey: "countList")
         labelLists[sender.tag].text = "\(textList[sender.tag])  \(countList[sender.tag])"
+        
+    }
+    
+    
+    @IBAction func resetButtonTapped(_ sender: UIButton) {
+        
+        for key in UserDefaults.standard.dictionaryRepresentation().keys {
+            UserDefaults.standard.removeObject(forKey: key.description)
+        }
+        
+        countList = [0,0,0,0,0,0,0,0,0]
+        
+        for i in 0...8{
+            labelLists[i].text = "\(textList[i]) \(countList[i])"
+        }
         
     }
     
